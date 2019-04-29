@@ -1,9 +1,2 @@
-% instance
-motive(harry).
-motive(sally).
-guilty(harry).
-
-% encoding
-innocent(Suspect) :- motive(Suspect), not guilty(Suspect).
-
-#show innocent/1.
+road(r1..4).
+lane(l1..8).
