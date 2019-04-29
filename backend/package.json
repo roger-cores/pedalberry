@@ -5,12 +5,16 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js"
+    "start": "node ./bin/www"
   },
   "author": "Roger Correia",
   "license": "ISC",
   "dependencies": {
     "clingojs": "^1.0.2",
-    "express": "^4.16.4"
+    "cookie-parser": "^1.4.4",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "hbs": "^4.0.4",
+    "morgan": "^1.9.1"
   }
 }
