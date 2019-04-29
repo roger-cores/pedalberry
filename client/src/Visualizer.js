@@ -19,7 +19,8 @@ class Visualizer extends Component {
   state = {
     data: '',
     message: null,
-    grounded: ''
+    grounded: '',
+    helperText: ''
   };
 
   componentDidMount() {
@@ -42,7 +43,11 @@ class Visualizer extends Component {
     }).then(function(response){
       if(response.data.data === '') {
         ref.setState({grounded: '***'})
-      }else ref.setState({grounded: response.data.data})
+        ref.setState({helperText: 'Invalid ASP'})
+      } else {
+        ref.setState({grounded: response.data.data})
+        ref.setState({helperText: ''})
+      }
     })
     .catch(function(err){
       console.log(err)
@@ -58,7 +63,7 @@ class Visualizer extends Component {
     return (
       <div className="root">
         <Grid container spacing={24}>
-          <Grid item xs={12} sm={12} md={4}>
+          <Grid item xs={12} sm={4} md={4}>
             <Paper className="paper"  style={this.styles.paper}>
               <TextField
                 id="standard-full-width"
@@ -67,9 +72,9 @@ class Visualizer extends Component {
                 rowsMax="15"
                 rows="10"
                 style={{ margin: 8 }}
-                helperText={this.state.grounded}
                 fullWidth
                 margin="normal"
+                helperText={this.state.helperText}
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -78,11 +83,14 @@ class Visualizer extends Component {
               />
             </Paper>
           </Grid>
-          <Grid item xs={12} sm={12} md={8}>
+          <Grid item xs={12} sm={8} md={8}>
             <Paper className="paper" style={this.styles.paper}>visualizer</Paper>
           </Grid>
           <Grid item xs={12}>
-            <Paper className="paper" style={this.styles.paper}>logs</Paper>
+            <Paper className="paper" style={this.styles.paper}>
+              <h1>Grounded Program:</h1>
+              {this.state.grounded}
+            </Paper>
           </Grid>
         </Grid>
       </div>
