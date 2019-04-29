@@ -19,7 +19,7 @@ class Visualizer extends Component {
   state = {
     data: '',
     message: null,
-    grounded: '***'
+    grounded: ''
   };
 
   componentDidMount() {
@@ -40,7 +40,9 @@ class Visualizer extends Component {
     axios.post("http://localhost:3001/route/", {
       input: input
     }).then(function(response){
-      ref.setState({grounded: response.data.data})
+      if(response.data.data === '') {
+        ref.setState({grounded: '***'})
+      }else ref.setState({grounded: response.data.data})
     })
     .catch(function(err){
       console.log(err)
