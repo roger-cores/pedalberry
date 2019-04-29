@@ -17,6 +17,26 @@ var routeFunction = function(codes){
   router.post('/', function(req, res, next){
     const { spawn } = require('child_process');
 
+    let re = /([a-z]+\()([a-z]+)([0-9]+)(\.\.)([0-9]+)(\)\.)/g
+    let m = ''
+    let n = ''
+    let i = 0
+
+    req.body.input2 = ''
+
+    do {
+        m = re.exec(req.body.input);
+        if (m) {
+            n = ''
+            for(i=Number(m[3]);i<=Number(m[5]);i++) {
+              n += ` ${m[1]}${m[2]}${i}${m[6]}`
+            }
+            req.body.input2 += req.body.input.replace(m[0],n)
+        }
+    } while (m);
+
+    if(req.body.input2 != '') req.body.input = req.body.input2;
+
     fs.writeFile('temp.asp', req.body.input, (err) => {
         if (err) throw err;
 
@@ -27,7 +47,7 @@ var routeFunction = function(codes){
         });
 
         ls.stderr.on('data', (data) => {
-          response = '***'
+          //response = '***'
         });
 
         ls.on('close', (code) => {
