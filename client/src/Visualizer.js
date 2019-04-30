@@ -40,7 +40,7 @@ class Visualizer extends Component {
       input: input
     }).then(function(response){
       if(response.data.data === '') {
-        ref.setState({grounded: '***'})
+        // ref.setState({grounded: '***'})
         ref.setState({helperText: 'Invalid ASP'})
       } else {
         ref.setState({grounded: response.data.data})
