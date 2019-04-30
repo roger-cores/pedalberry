@@ -1,16 +1,26 @@
 import React, { Component } from "react";
+
+// View Components
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
+import Chip from '@material-ui/core/Chip';
+import Typography from '@material-ui/core/Typography';
+
+
+//APIs
 import axios from "axios";
-
-
 
 class Visualizer extends Component {
 
   styles = {
     paper: {
       padding: 15
+    },
+    chip: {
+      margin: 5,
+      fontWeight: "bold",
+      fontSize: 18
     }
   }
 
@@ -18,7 +28,8 @@ class Visualizer extends Component {
     data: '',
     message: null,
     grounded: '',
-    helperText: ''
+    helperText: '',
+    atoms: {}
   };
 
   componentDidMount() {
@@ -40,11 +51,10 @@ class Visualizer extends Component {
       input: input
     }).then(function(response){
       if(response.data.data === '') {
-        // ref.setState({grounded: '***'})
         ref.setState({helperText: 'Invalid ASP'})
       } else {
-        ref.setState({grounded: response.data.data})
-        ref.setState({helperText: ''})
+        ref.setState({grounded: response.data.data, helperText: '', atoms: response.data.atoms})
+        console.log(ref.state.atoms)
       }
     })
     .catch(function(err){
@@ -84,12 +94,19 @@ class Visualizer extends Component {
           <Grid item xs={12} sm={8} md={8}>
             <Paper className="paper" style={this.styles.paper}>visualizer</Paper>
           </Grid>
-          <Grid item xs={12}>
-            <Paper className="paper" style={this.styles.paper}>
-              <h3>Grounded Program:</h3>
-              {this.state.grounded}
-            </Paper>
-          </Grid>
+
+          {Object.keys(this.state.atoms).map(key =>
+            <Grid item key={key}>
+              <Paper className="paper" style={this.styles.paper}>
+                <Typography color="textPrimary">
+                  {key.toUpperCase()}:
+                </Typography>
+                {Object.keys(this.state.atoms[key]).map(childKey =>
+                  <Chip key={childKey} label={this.state.atoms[key][childKey].args.join(' ').trim().replace(' ', ', ').toUpperCase()} style={this.styles.chip} />
+                )}
+              </Paper>
+            </Grid>
+          )}
         </Grid>
       </div>
     );
