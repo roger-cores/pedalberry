@@ -15,27 +15,45 @@ var routeFunction = function(codes){
   });
 
   router.post('/', function(req, res, next){
+
+    let atoms = {}
+
     const { spawn } = require('child_process');
 
+    // For Shorthand
     let re = /([a-z]+\()([a-z]+)([0-9]+)(\.\.)([0-9]+)(,[a-z0-9]+)?(\)\.)/g
+    // For Collecting atoms
+    let re2 = /([a-z0-9]+)\(([a-z0-9]+)(,[a-z0-9]+)?(,[a-z0-9]+)?\)\./g
     let m = ''
     let n = ''
     let i = 0
     req.body.input = req.body.input.replace(/ /g, '');
-    req.body.input2 = ''
 
+    // Shothand methods
     do {
         m = re.exec(req.body.input);
         if (m) {
             n = ''
             for(i=Number(m[3]);i<=Number(m[5]);i++) {
               n += ` ${m[1]}${m[2]}${i}${(m[6]?m[6]:'')}${m[7]}`
+              // console.log(n);
             }
-            req.body.input2 += req.body.input.replace(m[0],n)
+            req.body.input = req.body.input.replace(m[0],n)
         }
     } while (m);
 
-    if(req.body.input2 != '') req.body.input = req.body.input2;
+    m = ''
+    let input = req.body.input
+    do {
+        m = re2.exec(input);
+        if (m) {
+          if(!atoms[m[1]]) atoms[m[1]] = {}
+          atoms[m[1]][m[0]] = {
+            name: m[1],
+            args: [m[2], (m[3]?m[3].replace(',',''):m[3]), (m[4]?m[4].replace(',',''):m[4])]
+          }
+        }
+    } while (m);
 
     fs.writeFile('temp.asp', req.body.input, (err) => {
         if (err) throw err;
@@ -52,7 +70,7 @@ var routeFunction = function(codes){
 
         ls.on('close', (code) => {
           console.log(`child process exited with code ${code}`);
-          res.status(codes.OK).send({data: response})
+          res.status(codes.OK).send({data: response, atoms: atoms})
         });
     });
   });
