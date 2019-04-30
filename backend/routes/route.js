@@ -17,11 +17,11 @@ var routeFunction = function(codes){
   router.post('/', function(req, res, next){
     const { spawn } = require('child_process');
 
-    let re = /([a-z]+\()([a-z]+)([0-9]+)(\.\.)([0-9]+)(\)\.)/g
+    let re = /([a-z]+\()([a-z]+)([0-9]+)(\.\.)([0-9]+)(,[a-z0-9]+)?(\)\.)/g
     let m = ''
     let n = ''
     let i = 0
-
+    req.body.input = req.body.input.replace(/ /g, '');
     req.body.input2 = ''
 
     do {
@@ -29,7 +29,7 @@ var routeFunction = function(codes){
         if (m) {
             n = ''
             for(i=Number(m[3]);i<=Number(m[5]);i++) {
-              n += ` ${m[1]}${m[2]}${i}${m[6]}`
+              n += ` ${m[1]}${m[2]}${i}${(m[6]?m[6]:'')}${m[7]}`
             }
             req.body.input2 += req.body.input.replace(m[0],n)
         }
