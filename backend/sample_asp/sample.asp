@@ -18,4 +18,4 @@ leftof(l1,l2).
 westend(l1..2, i1).
 
 % l3 and l4 westend -> i1 eaststart
-weststart(l3..l4, i1).
+weststart(l3..4, i1).
