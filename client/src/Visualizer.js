@@ -10,8 +10,20 @@ import Typography from '@material-ui/core/Typography';
 
 //APIs
 import axios from "axios";
+import {Path, Rectangle, Point} from "paper";
+import PaperJS from "paper";
 
 class Visualizer extends Component {
+
+  gridTileStyle= {
+      position: 'relative',
+      float: 'left',
+      width: '100%',
+      minHeight: '400px',
+      minWidth: '664px',
+      overflow: 'hidden',
+      height: '100% !important'
+  }
 
   styles = {
     paper: {
@@ -32,8 +44,23 @@ class Visualizer extends Component {
     atoms: {}
   };
 
+  draw() {
+
+    // var rectangle = new Rectangle(new Point(50, 50), new Point(150, 100));
+    // var path = new Path.Rectangle(rectangle);
+    // path.fillColor = '#e9e9ff';
+    // path.selected = true;
+  }
+
+  handleLoad() {
+    console.log('dom loaded')
+    PaperJS.setup('canvas');
+
+  }
+
   componentDidMount() {
     this.sampleLoad();
+    window.addEventListener('load', this.handleLoad);
   }
 
   sampleLoad = () => {
@@ -92,7 +119,9 @@ class Visualizer extends Component {
             </Paper>
           </Grid>
           <Grid item xs={12} sm={8} md={8}>
-            <Paper className="paper" style={this.styles.paper}>visualizer</Paper>
+            <Paper className="paper" style={this.gridTileStyle}>
+              <canvas id="canvas" style={this.gridTileStyle}></canvas>
+            </Paper>
           </Grid>
 
           {Object.keys(this.state.atoms).map(key =>
