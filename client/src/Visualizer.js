@@ -139,7 +139,7 @@ class Visualizer extends Component {
                 id="standard-full-width"
                 label="Write ASP here:"
                 multiline
-                rowsMax="15"
+                rowsMax="20"
                 rows="10"
                 style={{ margin: 8 }}
                 fullWidth
