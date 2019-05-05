@@ -5,7 +5,7 @@ var routeFunction = function(codes){
   var router = express.Router();
 
   router.get('/sample', function(req, res, next) {
-    fs.readFile('./sample_asp/sample.asp', (err, data) => {
+    fs.readFile('./asp/sample.asp', (err, data) => {
         if(err) {
           res.status(codes.SERVER_ERROR).send(err)
           return
@@ -42,18 +42,7 @@ var routeFunction = function(codes){
         }
     } while (m);
 
-    m = ''
-    let input = req.body.input
-    do {
-        m = re2.exec(input);
-        if (m) {
-          if(!atoms[m[1]]) atoms[m[1]] = {}
-          atoms[m[1]][m[0]] = {
-            name: m[1],
-            args: [m[2], (m[3]?m[3].replace(',',''):m[3]), (m[4]?m[4].replace(',',''):m[4])]
-          }
-        }
-    } while (m);
+    req.body.input += fs.readFileSync('./asp/intersection_rules.asp')
 
     fs.writeFile('temp.asp', req.body.input, (err) => {
         if (err) throw err;
@@ -69,7 +58,20 @@ var routeFunction = function(codes){
         });
 
         ls.on('close', (code) => {
-          console.log(`child process exited with code ${code}`);
+          // Construct object from asp
+          m = ''
+          let input = response
+          do {
+              m = re2.exec(input);
+              if (m) {
+                if(!atoms[m[1]]) atoms[m[1]] = {}
+                atoms[m[1]][m[0]] = {
+                  name: m[1],
+                  args: [m[2], (m[3]?m[3].replace(',',''):m[3]), (m[4]?m[4].replace(',',''):m[4])]
+                }
+              }
+          } while (m);
+
           res.status(codes.OK).send({data: response, atoms: atoms})
         });
     });

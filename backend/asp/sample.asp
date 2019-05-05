@@ -13,9 +13,12 @@ inroad(l1..2, r1).
 inroad(l3..4, r2).
 
 leftof(l1,l2).
+leftof(l3,l4).
 
 % l1 and l2 westend -> i1 eaststart
-westend(l1..2, i1).
+westend(r1, i1).
+eaststart(r1,i2).
 
-% l3 and l4 westend -> i1 eaststart
-weststart(l3..4, i1).
+% l3 and l4 westend -> i1 eastend
+weststart(r2, i1).
+eastend(r2,i2).
