@@ -7,10 +7,13 @@ import TextField from '@material-ui/core/TextField';
 import Chip from '@material-ui/core/Chip';
 import Typography from '@material-ui/core/Typography';
 
+//Shapes
+import Rect from './shapes/Rect';
+
 
 //APIs
 import axios from "axios";
-import {Path, Rectangle, Point} from "paper";
+// import {Path, Rectangle, Point} from "paper";
 import PaperJS from "paper";
 
 class Visualizer extends Component {
@@ -41,7 +44,8 @@ class Visualizer extends Component {
     message: null,
     grounded: '',
     helperText: '',
-    atoms: {}
+    atoms: {},
+    rects: [],
   };
 
   draw() {
@@ -53,7 +57,6 @@ class Visualizer extends Component {
   }
 
   handleLoad() {
-    console.log('dom loaded')
     PaperJS.setup('canvas');
 
   }
@@ -82,6 +85,38 @@ class Visualizer extends Component {
       } else {
         ref.setState({grounded: response.data.data, helperText: '', atoms: response.data.atoms})
         console.log(ref.state.atoms)
+
+        if(ref.state.atoms['intersection']) {
+          let rects = [];
+          let initial = {
+            x: 10,
+            y: 10,
+            width: 100,
+            height: 100,
+            spacing: 10,
+            nperrow: 5
+          }
+          let i=0
+          let j=0
+          PaperJS.setup('canvas')
+          for(let k in ref.state.atoms['intersection']) {
+            rects.push(<Rect
+              key = {ref.state.atoms['intersection'][k]['args'][0]}
+              label = {ref.state.atoms['intersection'][k]['args'][0]}
+              x = {initial.x + (initial.width + initial.spacing) * i}
+              y = {initial.y + (initial.height + initial.spacing) * j}
+              width = {initial.width}
+              height = {initial.height} />
+            )
+            i+=1
+            if(i%5 == 0) {
+              j+=1
+              i=0
+            }
+          }
+          ref.setState({rects: []})
+          ref.setState({rects})
+        }
       }
     })
     .catch(function(err){
@@ -120,7 +155,9 @@ class Visualizer extends Component {
           </Grid>
           <Grid item xs={12} sm={8} md={8}>
             <Paper className="paper" style={this.gridTileStyle}>
-              <canvas id="canvas" style={this.gridTileStyle}></canvas>
+              <canvas id="canvas" style={this.gridTileStyle}>
+                {this.state.rects}
+              </canvas>
             </Paper>
           </Grid>
 
